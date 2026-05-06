@@ -7,21 +7,25 @@ echo "=================================================="
 echo ""
 
 # Check if virtual environment exists
-if [ ! -d "venv" ]; then
+if [ ! -d ".venv" ]; then
     echo "❌ Virtual environment not found."
     echo "Creating virtual environment..."
-    python3 -m venv venv
+    python3 -m venv .venv
     echo "✅ Virtual environment created"
 fi
 
 # Activate virtual environment
 echo "Activating virtual environment..."
-source venv/bin/activate
+source .venv/bin/activate
 
 # Check if dependencies are installed
-if [ ! -f "venv/bin/uvicorn" ]; then
+if [ ! -f ".venv/bin/uvicorn" ]; then
     echo "Installing dependencies..."
     pip install -r requirements.txt
+    if [ $? -ne 0 ]; then
+        echo "❌ Failed to install dependencies"
+        exit 1
+    fi
     echo "✅ Dependencies installed"
 fi
 
@@ -29,7 +33,8 @@ fi
 if [ ! -f ".env" ]; then
     echo "⚠️  Warning: .env file not found!"
     echo "Please copy .env.example to .env and configure your credentials."
-    exit 1
+    echo "For now, the app will use environment variables or fail on startup."
+    echo ""
 fi
 
 # Run the application

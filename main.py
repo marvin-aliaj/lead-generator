@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
 from typing import Optional
+from contextlib import asynccontextmanager
 import logging
 
 from config import settings
@@ -15,17 +16,14 @@ from scheduler_jobs import send_review_requests, send_feedback_forms
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize FastAPI app
-app = FastAPI(title="Restaurant Review & Feedback Automation System")
-
 # Initialize APScheduler
 scheduler = BackgroundScheduler()
 
 
-@app.on_event("startup")
-async def startup_event():
-    """Start the scheduler when the app starts"""
-    # Add scheduled jobs
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage application lifecycle"""
+    # Startup: Start the scheduler
     scheduler.add_job(
         send_review_requests,
         'interval',
@@ -42,13 +40,19 @@ async def startup_event():
     )
     scheduler.start()
     logger.info("Scheduler started successfully")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Shutdown the scheduler when the app stops"""
+    
+    yield
+    
+    # Shutdown: Stop the scheduler
     scheduler.shutdown()
     logger.info("Scheduler shut down successfully")
+
+
+# Initialize FastAPI app
+app = FastAPI(
+    title="Restaurant Review & Feedback Automation System",
+    lifespan=lifespan
+)
 
 
 @app.get("/health")
