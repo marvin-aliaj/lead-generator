@@ -1,5 +1,24 @@
 # Project: Restaurant Review & Feedback Automation System
 
+## Quick Start
+
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Set up environment variables
+cp .env.example .env
+# Edit .env with your credentials
+
+# 3. Run the Supabase schema
+# Copy contents of schema.sql to Supabase SQL Editor and execute
+
+# 4. Start the application
+python main.py
+```
+
+For detailed setup instructions, see [SETUP.md](SETUP.md)
+
 ## Overview
 A backend system that captures WiFi login data from restaurant customers and:
 1. Sends a WhatsApp/email message 2 hours after visit asking for a Google Review

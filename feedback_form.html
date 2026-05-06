@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>We Value Your Feedback</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .rating-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .star {
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #ddd;
+        }
+        
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+            transform: scale(1.1);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.2s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .success-message h2 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        
+        .error-message {
+            background-color: #fee;
+            color: #c33;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="form-container">
+            <h1>Hi {{customer_name}}! 👋</h1>
+            <p class="subtitle">We'd love to hear your thoughts about {{restaurant_name}}</p>
+            
+            <div id="error-message" class="error-message"></div>
+            
+            <form id="feedback-form">
+                <input type="hidden" id="customer-id" value="{{customer_id}}">
+                
+                <div class="form-group">
+                    <label>How would you rate your overall experience?</label>
+                    <div class="rating-container">
+                        <span class="star" data-rating="1">⭐</span>
+                        <span class="star" data-rating="2">⭐</span>
+                        <span class="star" data-rating="3">⭐</span>
+                        <span class="star" data-rating="4">⭐</span>
+                        <span class="star" data-rating="5">⭐</span>
+                    </div>
+                    <input type="hidden" id="rating" name="rating" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>What areas could we improve? (Select all that apply)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="food" name="improvement_areas" value="food">
+                            <label for="food">Food Quality</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="service" name="improvement_areas" value="service">
+                            <label for="service">Service</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="speed" name="improvement_areas" value="speed">
+                            <label for="speed">Speed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="atmosphere" name="improvement_areas" value="atmosphere">
+                            <label for="atmosphere">Atmosphere</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="price" name="improvement_areas" value="price">
+                            <label for="price">Price</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Any additional comments? (Optional)</label>
+                    <textarea id="comment" name="comment" placeholder="Tell us more..."></textarea>
+                </div>
+                
+                <button type="submit" id="submit-btn">Submit Feedback</button>
+            </form>
+        </div>
+        
+        <div id="success-message" class="success-message">
+            <h2>Thank You! 🎉</h2>
+            <p>Your feedback has been received. We truly appreciate you taking the time to help us improve!</p>
+        </div>
+    </div>
+    
+    <script>
+        // Star rating functionality
+        const stars = document.querySelectorAll('.star');
+        const ratingInput = document.getElementById('rating');
+        let selectedRating = 0;
+        
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating);
+                ratingInput.value = selectedRating;
+                updateStars();
+            });
+            
+            star.addEventListener('mouseenter', function() {
+                const hoverRating = parseInt(this.dataset.rating);
+                highlightStars(hoverRating);
+            });
+        });
+        
+        document.querySelector('.rating-container').addEventListener('mouseleave', function() {
+            updateStars();
+        });
+        
+        function highlightStars(rating) {
+            stars.forEach(star => {
+                const starRating = parseInt(star.dataset.rating);
+                if (starRating <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+        
+        function updateStars() {
+            highlightStars(selectedRating);
+        }
+        
+        // Form submission
+        const form = document.getElementById('feedback-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const errorMessage = document.getElementById('error-message');
+        
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validate rating
+            if (!ratingInput.value) {
+                showError('Please select a rating');
+                return;
+            }
+            
+            // Get improvement areas
+            const improvementAreas = [];
+            document.querySelectorAll('input[name="improvement_areas"]:checked').forEach(checkbox => {
+                improvementAreas.push(checkbox.value);
+            });
+            
+            // Prepare form data
+            const formData = {
+                customer_id: document.getElementById('customer-id').value,
+                rating: parseInt(ratingInput.value),
+                improvement_areas: improvementAreas,
+                comment: document.getElementById('comment').value.trim() || null
+            };
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            try {
+                const response = await fetch('/feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    // Show success message
+                    document.getElementById('form-container').style.display = 'none';
+                    document.getElementById('success-message').style.display = 'block';
+                } else {
+                    const error = await response.json();
+                    showError(error.detail || 'Failed to submit feedback. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit Feedback';
+                }
+            } catch (error) {
+                showError('Network error. Please check your connection and try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Feedback';
+            }
+        });
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
