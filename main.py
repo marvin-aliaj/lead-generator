@@ -61,6 +61,58 @@ async def health_check():
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
 
+@app.get("/restaurant/{rid}")
+async def get_restaurant(rid: str):
+    """
+    Get restaurant information by ID.
+    Called by the portal page to fetch restaurant name.
+    """
+    try:
+        result = supabase.table("restaurants").select("id, name, review_link").eq("id", rid).execute()
+        
+        if not result.data:
+            raise HTTPException(status_code=404, detail="Restaurant not found")
+        
+        restaurant = result.data[0]
+        return {
+            "id": restaurant["id"],
+            "name": restaurant["name"],
+            "review_link": restaurant["review_link"]
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching restaurant: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch restaurant: {str(e)}")
+
+
+@app.get("/customer/{cid}")
+async def get_customer(cid: str):
+    """
+    Get customer information by ID.
+    Called by the feedback page to display customer name and restaurant.
+    """
+    try:
+        result = supabase.table("customers").select("id, name, restaurants(name)").eq("id", cid).execute()
+        
+        if not result.data:
+            raise HTTPException(status_code=404, detail="Customer not found")
+        
+        customer = result.data[0]
+        return {
+            "id": customer["id"],
+            "name": customer["name"],
+            "restaurant_name": customer["restaurants"]["name"]
+        }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching customer: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to fetch customer: {str(e)}")
+
+
 @app.post("/checkin", response_model=CheckinResponse)
 async def checkin(request: CheckinRequest):
     """
