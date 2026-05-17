@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS customers (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name TEXT NOT NULL,
     phone TEXT NOT NULL,
+    email TEXT,
     restaurant_id UUID NOT NULL REFERENCES restaurants(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     message_sent BOOLEAN DEFAULT FALSE,

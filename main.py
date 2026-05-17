@@ -121,11 +121,17 @@ async def checkin(request: CheckinRequest):
     """
     try:
         # Insert customer data into Supabase
-        result = supabase.table("customers").insert({
+        insert_data = {
             "name": request.name,
             "phone": request.phone,
             "restaurant_id": request.restaurant_id,
-        }).execute()
+        }
+        
+        # Add email if provided
+        if request.email:
+            insert_data["email"] = request.email
+        
+        result = supabase.table("customers").insert(insert_data).execute()
 
         if not result.data:
             raise HTTPException(status_code=500, detail="Failed to save customer data")
@@ -137,6 +143,7 @@ async def checkin(request: CheckinRequest):
             id=customer_data["id"],
             name=customer_data["name"],
             phone=customer_data["phone"],
+            email=customer_data.get("email"),
             restaurant_id=customer_data["restaurant_id"],
             created_at=customer_data["created_at"]
         )

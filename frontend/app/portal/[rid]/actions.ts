@@ -18,6 +18,7 @@ export async function getRestaurant(rid: string) {
 export async function submitCheckin(data: {
   name: string;
   phone: string;
+  email?: string;
   restaurant_id: string;
 }) {
   try {

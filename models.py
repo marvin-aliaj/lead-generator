@@ -7,6 +7,7 @@ from uuid import UUID
 class CheckinRequest(BaseModel):
     name: str
     phone: str
+    email: Optional[str] = None
     restaurant_id: str
 
 
@@ -14,6 +15,7 @@ class CheckinResponse(BaseModel):
     id: str
     name: str
     phone: str
+    email: Optional[str]
     restaurant_id: str
     created_at: str
 
@@ -39,6 +41,7 @@ class Customer(BaseModel):
     id: str
     name: str
     phone: str
+    email: Optional[str]
     restaurant_id: str
     created_at: datetime
     message_sent: bool

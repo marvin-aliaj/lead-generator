@@ -6,6 +6,7 @@ import { submitCheckin } from "@/app/portal/[rid]/actions";
 export default function PortalForm({ restaurantId }: { restaurantId: string }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -36,6 +37,7 @@ export default function PortalForm({ restaurantId }: { restaurantId: string }) {
       await submitCheckin({
         name: name.trim(),
         phone: phone.trim(),
+        email: email.trim() || undefined,
         restaurant_id: restaurantId,
       });
 
@@ -115,6 +117,27 @@ export default function PortalForm({ restaurantId }: { restaurantId: string }) {
           placeholder="+1234567890"
           disabled={isSubmitting}
         />
+      </div>
+
+      <div>
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Email (Optional)
+        </label>
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none text-gray-800"
+          placeholder="your@email.com"
+          disabled={isSubmitting}
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          Provide your email to receive updates via email as well
+        </p>
       </div>
 
       <div className="flex items-start">
